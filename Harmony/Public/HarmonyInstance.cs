@@ -104,26 +104,19 @@ namespace Harmony
 			assembly.GetTypes().Do(type => ProcessorForAnnotatedClass(type)?.Patch());
 		}
 
-		/// <summary>Creates patches by manually specifying the methods</summary>
-		/// <param name="original">The original method</param>
-		/// <param name="prefix">An optional prefix method wrapped in a HarmonyMethod object</param>
-		/// <param name="postfix">An optional postfix method wrapped in a HarmonyMethod object</param>
-		/// <param name="transpiler">An optional transpiler method wrapped in a HarmonyMethod object</param>
-		/// <returns>The dynamic method that was created to patch the original method</returns>
-		///
-		public DynamicMethod Patch(MethodBase original, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null)
+
 	  public DynamicMethod Patch(Type type)
 	  {
-			var parentMethodInfos = type.GetHarmonyMethods();
-			if (parentMethodInfos != null && parentMethodInfos.Count() > 0)
-			{
-			   var info = HarmonyMethod.Merge(parentMethodInfos);
-			   var processor = new PatchProcessor(this, type, info);
-				processor.Patch().FirstOrDefault();
-			}
-			return null;
+		 return ProcessorForAnnotatedClass(type)?.Patch().FirstOrDefault();
 	  }
 
+	  /// <summary>Creates patches by manually specifying the methods</summary>
+	  /// <param name="original">The original method</param>
+	  /// <param name="prefix">An optional prefix method wrapped in a HarmonyMethod object</param>
+	  /// <param name="postfix">An optional postfix method wrapped in a HarmonyMethod object</param>
+	  /// <param name="transpiler">An optional transpiler method wrapped in a HarmonyMethod object</param>
+	  /// <returns>The dynamic method that was created to patch the original method</returns>
+	  ///
 	  public DynamicMethod Patch(MethodBase original, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null)
 		{
 			var processor = new PatchProcessor(this, new List<MethodBase> { original }, prefix, postfix, transpiler);
